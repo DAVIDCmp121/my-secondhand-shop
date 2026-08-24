@@ -4,7 +4,7 @@ import { Routes, Route, Link, useParams, useLocation } from 'react-router-dom'
 
 const products = [
   { id: 1, name: "BAPE ", price: 15000, category: "premium", image: "/images/BAPE.jpeg", images: ["/images/BAPE.jpeg", "/images/B1.jpeg", "/images/B2.jpeg"], detail: "ສະພາບດີ ບໍມີຕຳນິ" },
-  { id: 2, name: "Hoodie", price: 500, category: "hoodie", image: "/images/Hoodie.jpeg", images: ["/images/Hoodie.jpeg", "/images/H1.jpeg", "/images/H2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
+  { id: 2, name: "Hoodie", price: 400, category: "hoodie", image: "/images/Hoodie.jpeg", images: ["/images/Hoodie.jpeg", "/images/H1.jpeg", "/images/H2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
   { id: 3, name: "POLO", price: 450, category: "polo", image: "/images/POLO.jpeg", images: ["/images/POLO.jpeg", "/images/P1.jpeg", "/images/P2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
   { id: 4, name: "VLONE", price: 450, category: "premium", image: "/images/VLONE.jpeg", images: ["/images/VLONE.jpeg", "/images/V1.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
   { id: 5, name: "I don't smoke", price: 450, category: "hoodie", image: "/images/ID.jpeg", images: ["/images/ID.jpeg", "/images/S1.jpeg", "/images/S2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນ" },
