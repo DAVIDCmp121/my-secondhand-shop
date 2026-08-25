@@ -14,7 +14,7 @@ const products = [
   { id: 3, name: "POLO", price: 450, category: "polo", size: "L", sold: false, image: "/images/POLO.jpeg", images: ["/images/POLO.jpeg", "/images/P1.jpeg", "/images/P2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
   { id: 4, name: "VLONE", price: 450, category: "premium", size: "M", sold: false, image: "/images/VLONE.jpeg", images: ["/images/VLONE.jpeg", "/images/V1.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
   { id: 5, name: "I don't smoke", price: 450, category: "hoodie", size: "L", sold: false, image: "/images/ID.jpeg", images: ["/images/ID.jpeg", "/images/S1.jpeg", "/images/S2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
-  { id: 6, name: "Onitsuka Tiger", price: 450, category: "premium", size: "S", sold: false, image: "/images/ONITSUKATIGER.jpeg", images: ["/images/ONITSUKATIGER.jpeg", "/images/O1.jpeg", "/images/O2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
+  { id: 6, name: "Onitsuka Tiger", price: 4500, category: "premium", size: "S", sold: false, image: "/images/ONITSUKATIGER.jpeg", images: ["/images/ONITSUKATIGER.jpeg", "/images/O1.jpeg", "/images/O2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
 ]
 
 const categoryLabels = { all: "ທັງໝົດ", hoodie: "Hoodie", polo: "Polo", premium: "Premium" }
