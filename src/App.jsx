@@ -2,6 +2,7 @@ import './App.css'
 import { useState, useEffect, useRef, createContext, useContext } from 'react'
 import { Routes, Route, Link, useParams, useLocation, useNavigate } from 'react-router-dom'
 
+/* 👉 ตั้งค่า sold: true เมื่อสินค้าชนนั้นขายแล้ว */
 const products = [
   { id: 1, name: "BAPE ລິຂະສິດແທ້", price: 559000, category: "BAPE", size: "L", image: "/images/BAPE.jpeg", images: ["/images/BAPE.jpeg", "/images/B1.jpeg", "/images/B2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
   { id: 2, name: "Hoodie", price: 359000, category: "hoodie", size: "M", image: "/images/Hoodie.jpeg", images: ["/images/Hoodie.jpeg", "/images/H1.jpeg", "/images/H2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
@@ -24,10 +25,10 @@ const SALE_MAX_PRICE = 500
 
 const faqData = [
   { q: "ສິນຄ້າແມ່ນຂອງແທ້ບໍ?", a: "ແທ້ 100% ທຸກຕົວກວດເຊັກສະພາບກ່ອນລົງຂາຍ." },
-  { q: "ສັ່ງຊື້ແນວໃດ?", a: "ເລືອກສິນຄ້າ ໃສ່ຕະກ້າ ຫຼືກົດ 'ສັ່ງຊື້ເລີຍ' ຈາກນັ້ນຊຳລະຜ່ານ QR ແລ້ວກອບປີ້ຂໍ້ຄວາມສົ່ງໃນແຊັດ." },
+  { q: "ສງຊື້ແນວໃດ?", a: "ເລືອກສິນຄ້າ ໃສ່ຕະກ້າ ຫຼືກດ 'ສັ່ງຊື້ເລີຍ' ຈາກນັ້ນຊຳລະຜ່ານ QR ແລ້ວກອບປີຂໍ້ຄວາມສົ່ງໃນແຊັດ." },
   { q: "ຊຳລະເງິນແນວໃດ?", a: "ໂອນຜ່ານ QR ໃນໜ້າຊຳລະເງິນ ຈາກນັ້ນສົ່ງສະລິບໃຫ້ພວກເຮົາທາງ Facebook." },
-  { q: "ສົ່ງເສື້ອຜ້າດົນປານໃດ?", a: "ໂດຍປົກກະຕິ 2-4 ວັນທຳການ ຫຼັງຢືນຢັນອໍເດີ." },
-  { q: "ຖ້າສິນຄ້າບໍ່ຕົງກັບຮູບ ປ່ຽນໄດ້ບໍ?", a: "ປ່ຽນໄດ້ ຫາກສິນຄ້າບໍ່ຕົງກັບຮູບທີ່ລົງໄວ້ ພາຍໃນ 3 ວັນຫຼັງໄດ້ຮັບເສື້ອ." },
+  { q: "ສົ່ງເສື້ອຜ້າດົນປານໃດ?", a: "ໂດຍປົກກະຕ 2-4 ວັນທຳການ ຫຼັງຢືນຢັນອໍເດີ." },
+  { q: "ຖ້າສິນຄ້າບໍ່ຕງກັບຮູບ ປ່ຽນໄດ້ບໍ?", a: "ປ່ຽນໄດ້ ຫາກສິນຄ້າບໍ່ຕົງກັບຮູບທີ່ລົງໄວ້ ພາຍໃນ 3 ວັນຫຼັງໄດ້ຮັບເສື້ອ." },
   { q: "ໄຊສ໌ບໍ່ພໍດີ ມີໄຊສ໌ອື່ນບໍ?", a: "ສິນຄ້າມືສອງແຕ່ລະຕົວມີພຽງ 1 ໄຊສ໌ ຕາມທີ່ລະບຸໄວ້ໃນໜ້າສິນຄ້າ." },
 ]
 
@@ -35,9 +36,9 @@ const reviewsData = [
   { name: "ນ້ອງແອັມ", text: "ສິນຄ້າສະພາບດີຫຼາຍ ຕົງຕາມຮູບ ສົ່ງໄວທັນໃຈ" },
   { name: "ພີ່ໂຕ", text: "ລາຄາຍຸດຕິທຳ ຕອບແຊັດໄວ ຈະອຸດໜູນຕໍ່ແນ່ນອນ" },
   { name: "ນ້ອງມິນ", text: "ຂອງແທ້ 100% ຄຸ້ມຄ່າຄຸ້ມລາຄາຫຼາຍໆ" },
-  { name: "ອ້າຍນິງ", text: "ຫຸ້ຍ Hoodie ນຸ່ມ ສະພາບຄືກັບໃໝ່ ແນະນຳຮ້ານນີ້ເລີຍ" },
+  { name: "ອ້າຍນິງ", text: "ຫຸ້ຍ Hoodie ນຸ່ມ ສະພາບຄືກັບໃໝ ແນະນຳຮ້ານນີ້ເລີຍ" },
   { name: "ນ້ອງແພັມ", text: "ຮູບຊັດ ລາຍລະອຽດຄົບ ບໍ່ຫຼອກລວງ ໄວ້ໃຈໄດ້" },
-  { name: "ພີ່ແບັງ", text: "ຊື້ໄປຫຼາຍຄັ້ງແລ້ວ ຄຸນນະພາບຄົງທີ່ ລາຄາເປັນກັນເອງ" },
+  { name: "ພແບັງ", text: "ຊື້ໄປຫາຍຄັ້ງແລ້ວ ຄນນະພາບຄົງທີ່ ລາຄາເປັນກັນເອງ" },
   { name: "ນ້ອງນິວ", text: "ແພັກສິນຄ້າດີ ບໍ່ຢ້ານເປື້ອນ ມາຮອດໄວ" },
   { name: "ອ້າຍໂອ", text: "POLO ໄດ້ຄືຮູບ 100% ພໍໃຈຫຼາຍ" },
 ]
@@ -48,15 +49,12 @@ function useCart() { return useContext(CartContext) }
 
 function CartProvider({ children }) {
   const [items, setItems] = useState(() => {
-    try {
-      const saved = localStorage.getItem("vintage-ds-cart")
-      return saved ? JSON.parse(saved) : []
-    } catch { return [] }
+    try { const saved = localStorage.getItem("vintage-ds-cart"); return saved ? JSON.parse(saved) : [] } catch { return [] }
   })
-
   useEffect(() => { localStorage.setItem("vintage-ds-cart", JSON.stringify(items)) }, [items])
 
   const addToCart = (product) => {
+    if (product.sold) return
     setItems((prev) => {
       const found = prev.find((i) => i.id === product.id)
       if (found) return prev.map((i) => i.id === product.id ? { ...i, qty: i.qty + 1 } : i)
@@ -66,15 +64,10 @@ function CartProvider({ children }) {
   const removeFromCart = (id) => setItems((prev) => prev.filter((i) => i.id !== id))
   const changeQty = (id, delta) => setItems((prev) => prev.map((i) => i.id === id ? { ...i, qty: Math.max(1, i.qty + delta) } : i))
   const clearCart = () => setItems([])
-
   const total = items.reduce((sum, i) => sum + i.price * i.qty, 0)
   const count = items.reduce((sum, i) => sum + i.qty, 0)
 
-  return (
-    <CartContext.Provider value={{ items, addToCart, removeFromCart, changeQty, clearCart, total, count }}>
-      {children}
-    </CartContext.Provider>
-  )
+  return <CartContext.Provider value={{ items, addToCart, removeFromCart, changeQty, clearCart, total, count }}>{children}</CartContext.Provider>
 }
 
 function useToast() {
@@ -129,11 +122,28 @@ function Ripple(e) {
   setTimeout(() => circle.remove(), 600)
 }
 
+/* ===== Image with skeleton loading ===== */
+function SmartImg({ src, alt, className = "" }) {
+  const [loaded, setLoaded] = useState(false)
+  return (
+    <>
+      {!loaded && <div className={`img-skeleton ${className}`}></div>}
+      <img
+        src={src} alt={alt}
+        className={`${className} ${loaded ? "img-loaded" : "img-loading"}`}
+        onLoad={() => setLoaded(true)}
+        loading="lazy"
+      />
+    </>
+  )
+}
+
 function PromoBar() {
-  const text = "🚚 ສົ່ງທົ່ວປະເທດ　💯 ຂອງແທ້ 100%　🔄 ປ່ຽນໄດ້ຫາກສິນຄ້າບໍ່ຕົງປົກ　🔥 ອັບເດດສິນຄ້າໃໝ່ທຸກອາທິດ　"
+  const text = "🚚 ສົ່ງທົ່ວປະເທດ　💯 ຂອງແທ້ 100%　🔄 ປ່ຽນໄດ້ຫາກສິນຄ້າບໍ່ຕົງປົກ　🔥 ອັບເດດສິນຄ້າໃໝ່ທກອາທິດ　"
   return <div className="promo-bar"><div className="marquee"><span>{text}{text}</span></div></div>
 }
 
+/* ===== Navbar (with hamburger) ===== */
 function Navbar() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -141,6 +151,7 @@ function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [query, setQuery] = useState("")
   const [showResults, setShowResults] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const searchRef = useRef(null)
 
   useEffect(() => {
@@ -153,6 +164,11 @@ function Navbar() {
     document.addEventListener("mousedown", onClickOutside)
     return () => document.removeEventListener("mousedown", onClickOutside)
   }, [])
+  useEffect(() => { setMenuOpen(false) }, [location.pathname])
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : ""
+    return () => { document.body.style.overflow = "" }
+  }, [menuOpen])
 
   const results = query.trim() ? products.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()) || p.size.toLowerCase().includes(query.toLowerCase())) : []
 
@@ -160,43 +176,77 @@ function Navbar() {
     { to: "/", label: "ໜ້າຫຼັກ" },
     { to: "/categories", label: "ໝວດໝູ່" },
     { to: "/promotions", label: "ໂປຣໂມຊັນ" },
-    { to: "/about", label: "ກ່ຽວກັບຮ້ານ" },
-    { to: "/contact", label: "ຕິດຕໍ່ເຮົາ" },
+    { to: "/about", label: "ກຽວກັບຮ້ານ" },
+    { to: "/contact", label: "ຕດຕໍ່ເຮົາ" },
   ]
 
   return (
-    <nav className={`navbar ${scrolled ? "navbar-scrolled" : ""}`}>
-      <Link to="/" className="navbar-logo">Vintage <span>DS</span></Link>
-      <div className="navbar-search" ref={searchRef}>
-        <input type="text" placeholder="🔍 ຄົ້ນຫາຊື່ ຫຼື ໄຊສ໌..." value={query}
-          onChange={(e) => { setQuery(e.target.value); setShowResults(true) }} onFocus={() => setShowResults(true)} />
-        {showResults && query.trim() && (
-          <div className="search-dropdown">
-            {results.length === 0 && <div className="search-empty">ບໍ່ພົບສິນຄ້າ</div>}
-            {results.map((p) => (
-              <div key={p.id} className="search-item" onClick={() => { navigate(`/product/${p.id}`); setQuery(""); setShowResults(false) }}>
-                <img src={p.image} alt={p.name} />
-                <div><p>{p.name}</p><span>ໄຊສ໌ {p.size} · {p.price.toLocaleString()} ກີບ</span></div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      <div className="navbar-links">
-        {links.map((link) => (
-          <Link key={link.to} to={link.to} className={`nav-link ${location.pathname === link.to ? "active" : ""}`}>{link.label}</Link>
+    <>
+      <nav className={`navbar ${scrolled ? "navbar-scrolled" : ""}`}>
+        <Link to="/" className="navbar-logo">Vintage <span>DS</span></Link>
+
+        <div className="navbar-search desktop-only" ref={searchRef}>
+          <input type="text" placeholder="🔍 ຄົ້ນຫາຊື່ ຫຼື ໄຊສ໌..." value={query}
+            onChange={(e) => { setQuery(e.target.value); setShowResults(true) }} onFocus={() => setShowResults(true)} />
+          {showResults && query.trim() && (
+            <div className="search-dropdown">
+              {results.length === 0 && <div className="search-empty">ບໍ່ພົບສິນຄ້າ</div>}
+              {results.map((p) => (
+                <div key={p.id} className="search-item" onClick={() => { navigate(`/product/${p.id}`); setQuery(""); setShowResults(false) }}>
+                  <img src={p.image} alt={p.name} />
+                  <div><p>{p.name} {p.sold && <span className="sold-tag-mini">ຂາຍແລ້ວ</span>}</p><span>ໄຊສ໌ {p.size} · {p.price.toLocaleString()} ບາດ</span></div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="navbar-links desktop-only">
+          {links.map((link) => (
+            <Link key={link.to} to={link.to} className={`nav-link ${location.pathname === link.to ? "active" : ""}`}>{link.label}</Link>
+          ))}
+          <Link to="/cart" className="cart-icon-link">🛒{count > 0 && <span className="cart-badge">{count}</span>}</Link>
+        </div>
+
+        <div className="navbar-mobile-actions mobile-only">
+          <Link to="/cart" className="cart-icon-link">🛒{count > 0 && <span className="cart-badge">{count}</span>}</Link>
+          <button className={`hamburger ${menuOpen ? "open" : ""}`} onClick={() => setMenuOpen(!menuOpen)} aria-label="menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </nav>
+
+      <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
+        <div className="mobile-search">
+          <input type="text" placeholder="🔍 ຄົ້ນຫາຊື່ ຫຼື ໄຊສ໌..." value={query}
+            onChange={(e) => setQuery(e.target.value)} />
+          {query.trim() && (
+            <div className="mobile-search-results">
+              {results.length === 0 && <div className="search-empty">ບໍ່ພົບສິນຄ້າ</div>}
+              {results.map((p) => (
+                <div key={p.id} className="search-item" onClick={() => { navigate(`/product/${p.id}`); setQuery(""); setMenuOpen(false) }}>
+                  <img src={p.image} alt={p.name} />
+                  <div><p>{p.name}</p><span>ໄຊສ໌ {p.size} · {p.price.toLocaleString()} ບາດ</span></div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        {links.map((link, i) => (
+          <Link key={link.to} to={link.to} className={`mobile-link ${location.pathname === link.to ? "active" : ""}`} style={{ animationDelay: `${i * 0.06}s` }}>{link.label}</Link>
         ))}
-        <Link to="/cart" className="cart-icon-link">🛒{count > 0 && <span className="cart-badge">{count}</span>}</Link>
       </div>
-    </nav>
+      {menuOpen && <div className="mobile-menu-backdrop" onClick={() => setMenuOpen(false)}></div>}
+    </>
   )
 }
 
+/* ===== Product card ===== */
 function ProductCard({ product, index }) {
   const cardRef = useRef(null)
   const { addToCart } = useCart()
   const toast = useContext(ToastContext)
-  const isSale = product.price <= SALE_MAX_PRICE
+  const isSale = product.price <= SALE_MAX_PRICE && !product.sold
 
   const handleMove = (e) => {
     const card = cardRef.current
@@ -207,18 +257,21 @@ function ProductCard({ product, index }) {
   }
 
   return (
-    <Link ref={cardRef} to={`/product/${product.id}`} className="product-card" style={{ animationDelay: `${index * 0.07}s` }} onMouseMove={handleMove}>
+    <Link ref={cardRef} to={`/product/${product.id}`} className={`product-card ${product.sold ? "is-sold" : ""}`} style={{ animationDelay: `${index * 0.07}s` }} onMouseMove={handleMove}>
       <div className="card-glow"></div>
       <div className="product-img-wrap">
         <span className="category-chip" style={{ background: categoryColors[product.category] }}>{categoryLabels[product.category]}</span>
         {isSale && <span className="sale-chip">ລາຄາຍ່ອມ</span>}
-        <img src={product.image} alt={product.name} />
-        <button className="quick-add-btn" onClick={(e) => { e.preventDefault(); e.stopPropagation(); Ripple(e); addToCart(product); toast?.show(`ໃສ່ '${product.name}' ໃນຕະກ້າແລ້ວ ✓`) }}>+ ໃສ່ຕະກ້າ</button>
+        {product.sold && <div className="sold-overlay"><span>ຂາຍແລ້ວ</span></div>}
+        <SmartImg src={product.image} alt={product.name} />
+        {!product.sold && (
+          <button className="quick-add-btn" onClick={(e) => { e.preventDefault(); e.stopPropagation(); Ripple(e); addToCart(product); toast?.show(`ໃສ່ '${product.name}' ໃນຕະກ້າແລ້ວ ✓`) }}>+ ໃສ່ຕະກ້າ</button>
+        )}
       </div>
       <div className="product-card-info">
         <h3>{product.name}</h3>
         <div className="stars">★★★★★ <span className="size-chip">ໄຊສ໌ {product.size}</span></div>
-        <p className="price-tag">ລາຄາ {product.price.toLocaleString()} ກີບ</p>
+        <p className="price-tag">ລາຄາ {product.price.toLocaleString()} ບາດ</p>
       </div>
     </Link>
   )
@@ -262,15 +315,12 @@ function Home() {
         <div className="hero-glow hero-glow-2"></div>
         <div className="hero-ring"></div>
         <div className="hero-particles">{Array.from({ length: 16 }).map((_, i) => <span key={i} className="particle" style={{ "--i": i }}></span>)}</div>
-        <div className="hero-emojis">
-          {["👕", "✨", "🧥", "🔥", "👟", "⭐"].map((e, i) => <span key={i} className="floaty-emoji" style={{ "--i": i }}>{e}</span>)}
-        </div>
+        <div className="hero-emojis">{["👕", "✨", "🧥", "🔥", "👟", "⭐"].map((e, i) => <span key={i} className="floaty-emoji" style={{ "--i": i }}>{e}</span>)}</div>
 
-        <span className="hero-tagline-badge">🔥 ຂາຍເຄື່ອງມືສອງ</span>
+        <span className="hero-tagline-badge">🔥 ຮ້ານມືສອງແທ້ອັນດັບ 1</span>
         <img src="/images/logo.jpeg" alt="Vintage DS" className="hero-logo" />
         <h1 className="shop-title">Vintage DS</h1>
-        <p className="shop-subtitle">ໄປອ່ານຄືນ ໄປຟັງຄືນ ອໍ້ແອ້ອ່ະ!!!</p>
-
+        <p className="shop-subtitle">ເສື້ອຜ້າມືສອງແທ້ ສະພາບດີ ລາຄາຍຸດຕິທຳ</p>
         <a href={FB_PAGE} target="_blank" rel="noopener noreferrer" className="follow-fb-btn" onClick={Ripple}>👍 ຕິດຕາມ Facebook Page</a>
 
         <div className="trust-badges">
@@ -281,9 +331,7 @@ function Home() {
       </section>
 
       <div className="filter-bar">
-        {Object.keys(categoryLabels).map((key) => (
-          <button key={key} className={`filter-btn ${filter === key ? "active" : ""}`} onClick={(e) => { Ripple(e); changeFilter(key) }}>{categoryLabels[key]}</button>
-        ))}
+        {Object.keys(categoryLabels).map((key) => <button key={key} className={`filter-btn ${filter === key ? "active" : ""}`} onClick={(e) => { Ripple(e); changeFilter(key) }}>{categoryLabels[key]}</button>)}
       </div>
 
       <Reveal><div className="section-label"><h2>ສິນຄ້າແນະນຳ</h2><span>{filteredProducts.length} ລາຍການ</span></div></Reveal>
@@ -305,9 +353,7 @@ function Home() {
           <h2>ລູກຄ້າເວົ້າວ່າແນວໃດ</h2>
           <div className="testimonial-grid">
             {reviewsData.slice(0, 3).map((t, i) => (
-              <div className="testimonial-card" key={i} style={{ animationDelay: `${i * 0.1}s` }}>
-                <div className="stars">★★★★★</div><p>"{t.text}"</p><span className="testimonial-name">— {t.name}</span>
-              </div>
+              <div className="testimonial-card" key={i} style={{ animationDelay: `${i * 0.1}s` }}><div className="stars">★★★★★</div><p>"{t.text}"</p><span className="testimonial-name">— {t.name}</span></div>
             ))}
           </div>
           <Link to="/reviews" className="view-all-link">ເບິ່ງລີວິວທັງໝົດ →</Link>
@@ -325,6 +371,24 @@ function Home() {
   )
 }
 
+/* ===== Related products ===== */
+function RelatedProducts({ current }) {
+  const related = products.filter((p) => p.id !== current.id && p.category === current.category).slice(0, 4)
+  const fallback = products.filter((p) => p.id !== current.id && !related.includes(p)).slice(0, 4 - related.length)
+  const list = [...related, ...fallback]
+  if (list.length === 0) return null
+  return (
+    <Reveal>
+      <section className="related-section">
+        <h2>ສິນຄ້າທີ່ອາດຈະຖືກໃຈ</h2>
+        <div className="product-grid related-grid">
+          {list.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
+        </div>
+      </section>
+    </Reveal>
+  )
+}
+
 /* ===== Product Detail ===== */
 function ProductDetail() {
   const { id } = useParams()
@@ -336,10 +400,9 @@ function ProductDetail() {
   const toast = useContext(ToastContext)
   const [copied, setCopied] = useState(false)
 
-  if (!product) return <p style={{ padding: "40px", textAlign: "center" }}>ไม่พบสินค้า</p>
+  if (!product) return <NotFound />
 
   const pageUrl = typeof window !== "undefined" ? window.location.href : ""
-
   const handleZoom = (e) => {
     const img = imgRef.current
     if (!img) return
@@ -356,6 +419,7 @@ function ProductDetail() {
       <div className="detail-layout">
         <div className="detail-gallery">
           <div className="detail-main-img" onMouseMove={handleZoom} onMouseLeave={() => { if (imgRef.current) imgRef.current.style.transformOrigin = "center" }}>
+            {product.sold && <div className="sold-overlay detail-sold"><span>ຂາຍແລ້ວ</span></div>}
             <img ref={imgRef} key={activeImg} src={product.images[activeImg]} alt={product.name} className="zoom-img" />
           </div>
           <div className="detail-thumbs">
@@ -366,16 +430,21 @@ function ProductDetail() {
           <div className="detail-chips">
             <span className="category-chip" style={{ background: categoryColors[product.category], position: "static" }}>{categoryLabels[product.category]}</span>
             <span className="size-chip size-chip-lg">ໄຊສ໌ {product.size}</span>
+            {product.sold && <span className="sold-tag">ຂາຍແລ້ວ</span>}
           </div>
           <h1>{product.name}</h1>
           <div className="stars detail-stars">★★★★★ <span>(5.0)</span></div>
-          <p className="detail-price">{product.price.toLocaleString()} ກີບ</p>
+          <p className="detail-price">{product.price.toLocaleString()} ບາດ</p>
           <p className="detail-desc">{product.detail}</p>
 
-          <div className="detail-actions">
-            <button className="buy-btn-outline" onClick={(e) => { Ripple(e); addToCart(product); toast?.show("ໃສ່ຕະກ້າແລ້ວ ✓") }}>🛒 ໃສ່ຕະກ້າ</button>
-            <button className="buy-btn" onClick={(e) => { Ripple(e); navigate("/checkout", { state: { buyNow: product } }) }}>⚡ ສັ່ງຊື້ເລີຍ</button>
-          </div>
+          {product.sold ? (
+            <div className="sold-notice">😢 ສິນຄ້ານີ້ຖືກຂາຍໄປແລ້ວ ລອງເບິ່ງສິນຄ້າຄ້າຍຄືກັນລຸ່ມນີ້ໄດ້</div>
+          ) : (
+            <div className="detail-actions">
+              <button className="buy-btn-outline" onClick={(e) => { Ripple(e); addToCart(product); toast?.show("ໃສ່ຕະກ້າແລ້ວ ✓") }}>🛒 ໃສ່ຕະກ້າ</button>
+              <button className="buy-btn" onClick={(e) => { Ripple(e); navigate("/checkout", { state: { buyNow: product } }) }}>⚡ ສັ່ງຊື້ເລີຍ</button>
+            </div>
+          )}
 
           <div className="share-row">
             <span>ແຊຣ໌:</span>
@@ -386,10 +455,15 @@ function ProductDetail() {
           <Link to="/" className="back-link">← ກັບໄປໜ້າຫຼັກ</Link>
         </div>
       </div>
-      <div className="sticky-buy-bar">
-        <div><strong>{product.price.toLocaleString()} ກີບ</strong><span>{product.name}</span></div>
-        <button onClick={(e) => { Ripple(e); navigate("/checkout", { state: { buyNow: product } }) }}>ສັ່ງຊື້ເລີຍ</button>
-      </div>
+
+      <RelatedProducts current={product} />
+
+      {!product.sold && (
+        <div className="sticky-buy-bar">
+          <div><strong>{product.price.toLocaleString()} ບາດ</strong><span>{product.name}</span></div>
+          <button onClick={(e) => { Ripple(e); navigate("/checkout", { state: { buyNow: product } }) }}>ສັ່ງຊື້ເລີຍ</button>
+        </div>
+      )}
     </div>
   )
 }
@@ -445,11 +519,7 @@ function Reviews() {
       <section className="page-hero"><h1>⭐ ລີວິວຈາກລູກຄ້າ</h1><p>ຄວາມຄິດເຫັນຈິງຈາກຄົນທີ່ອຸດໜູນ</p></section>
       <div className="testimonial-grid reviews-page-grid">
         {reviewsData.map((t, i) => (
-          <Reveal key={i} delay={i * 60}>
-            <div className="testimonial-card" style={{ animationDelay: `${i * 0.05}s` }}>
-              <div className="stars">★★★★★</div><p>"{t.text}"</p><span className="testimonial-name">— {t.name}</span>
-            </div>
-          </Reveal>
+          <Reveal key={i} delay={i * 60}><div className="testimonial-card" style={{ animationDelay: `${i * 0.05}s` }}><div className="stars">★★★★★</div><p>"{t.text}"</p><span className="testimonial-name">— {t.name}</span></div></Reveal>
         ))}
       </div>
     </div>
@@ -479,22 +549,14 @@ function CartPage() {
         {items.map((item) => (
           <div className="cart-item" key={item.id}>
             <img src={item.image} alt={item.name} />
-            <div className="cart-item-info">
-              <h3>{item.name}</h3>
-              <span className="size-chip">ໄຊສ໌ {item.size}</span>
-              <p className="price-tag">{item.price.toLocaleString()} ກີບ</p>
-            </div>
-            <div className="qty-stepper">
-              <button onClick={() => changeQty(item.id, -1)}>−</button>
-              <span>{item.qty}</span>
-              <button onClick={() => changeQty(item.id, 1)}>+</button>
-            </div>
+            <div className="cart-item-info"><h3>{item.name}</h3><span className="size-chip">ໄຊສ໌ {item.size}</span><p className="price-tag">{item.price.toLocaleString()} ບາດ</p></div>
+            <div className="qty-stepper"><button onClick={() => changeQty(item.id, -1)}>−</button><span>{item.qty}</span><button onClick={() => changeQty(item.id, 1)}>+</button></div>
             <button className="remove-btn" onClick={() => removeFromCart(item.id)}>🗑️</button>
           </div>
         ))}
       </div>
       <div className="cart-summary">
-        <div className="cart-total"><span>ລວມທັງໝົດ</span><strong>{total.toLocaleString()} ກີບ</strong></div>
+        <div className="cart-total"><span>ລວມທັງໝົດ</span><strong>{total.toLocaleString()} ບາດ</strong></div>
         <button className="buy-btn" onClick={(e) => { Ripple(e); navigate("/checkout") }}>💳 ຊຳລະເງິນ</button>
       </div>
     </div>
@@ -507,41 +569,31 @@ function Checkout() {
   const navigate = useNavigate()
   const { items: cartItems, total: cartTotal, clearCart } = useCart()
   const buyNow = location.state?.buyNow
-
   const checkoutItems = buyNow ? [{ ...buyNow, qty: 1 }] : cartItems
   const checkoutTotal = buyNow ? buyNow.price : cartTotal
-
   const [form, setForm] = useState({ name: "", address: "", phone: "" })
   const [errors, setErrors] = useState({})
 
   if (checkoutItems.length === 0) {
-    return (
-      <div className="cart-empty">
-        <div className="cart-empty-icon">🧾</div>
-        <h2>ຍັງບໍ່ມີສິນຄ້າໃຫ້ຊຳລະເງິນ</h2>
-        <Link to="/" className="buy-btn">ໄປເລືອກຊື້ສິນຄ້າ</Link>
-      </div>
-    )
+    return <div className="cart-empty"><div className="cart-empty-icon">🧾</div><h2>ຍັງບໍ່ມີສິນຄ້າໃຫ້ຊຳລະເງິນ</h2><Link to="/" className="buy-btn">ໄປເລືອກຊື້ສິນຄ້າ</Link></div>
   }
 
   const handleChange = (field, value) => setForm((f) => ({ ...f, [field]: value }))
-
   const buildOrderText = () => {
     let text = "📦 ສະຫຼຸບອໍເດີ Vintage DS\n\n"
-    checkoutItems.forEach((i) => { text += `- ${i.name} (ໄຊສ໌ ${i.size}) x${i.qty} = ${(i.price * i.qty).toLocaleString()} ກີບ\n` })
-    text += `\nລວມທັງໝົດ: ${checkoutTotal.toLocaleString()} ກີບ\n\n`
+    checkoutItems.forEach((i) => { text += `- ${i.name} (ໄຊສ໌ ${i.size}) x${i.qty} = ${(i.price * i.qty).toLocaleString()} ບາດ\n` })
+    text += `\nລວມທັງໝົດ: ${checkoutTotal.toLocaleString()} ບາດ\n\n`
     text += `👤 ຊື່: ${form.name}\n📍 ທີ່ຢູ່: ${form.address}\n📞 ເບີໂທ: ${form.phone}`
     return text
   }
 
   const handleConfirm = (e) => {
     const newErrors = {}
-    if (!form.name.trim()) newErrors.name = "ກະລຸນາໃສ່ຊື່"
-    if (!form.address.trim()) newErrors.address = "ກະລຸນາໃສ່ທີ່ຢູ່"
-    if (!form.phone.trim()) newErrors.phone = "ກະລຸນາໃສ່ເບີໂທ"
+    if (!form.name.trim()) newErrors.name = "ກະລຸນາໃສ່ຊື"
+    if (!form.address.trim()) newErrors.address = "ກະລຸນາໃສ່ທີຢູ່"
+    if (!form.phone.trim()) newErrors.phone = "ກະລຸນາໃສເບີໂທ"
     setErrors(newErrors)
     if (Object.keys(newErrors).length > 0) return
-
     Ripple(e)
     navigator.clipboard?.writeText(buildOrderText())
     if (!buyNow) clearCart()
@@ -552,7 +604,6 @@ function Checkout() {
     <div className="checkout-page">
       <div className="breadcrumb"><Link to="/">ໜ້າຫຼັກ</Link> / <span>ຊຳລະເງິນ</span></div>
       <h1>💳 ຊຳລະເງິນ</h1>
-
       <div className="checkout-layout">
         <div className="checkout-left">
           <Reveal>
@@ -561,21 +612,17 @@ function Checkout() {
               {checkoutItems.map((item) => (
                 <div className="checkout-line" key={item.id}>
                   <img src={item.image} alt={item.name} />
-                  <div className="checkout-line-info">
-                    <p>{item.name}</p>
-                    <span>ໄຊສ໌ {item.size} × {item.qty}</span>
-                  </div>
-                  <strong>{(item.price * item.qty).toLocaleString()} ກີບ</strong>
+                  <div className="checkout-line-info"><p>{item.name}</p><span>ໄຊສ໌ {item.size} × {item.qty}</span></div>
+                  <strong>{(item.price * item.qty).toLocaleString()} ບາດ</strong>
                 </div>
               ))}
-              <div className="checkout-total-row"><span>ລວມທັງໝົດ</span><strong>{checkoutTotal.toLocaleString()} ກີບ</strong></div>
+              <div className="checkout-total-row"><span>ລວມທັງໝົດ</span><strong>{checkoutTotal.toLocaleString()} ບາດ</strong></div>
             </div>
           </Reveal>
-
           <Reveal delay={100}>
             <div className="checkout-card qr-card">
               <h3>📱 ສະແກນ QR ເພື່ອໂອນເງິນ</h3>
-              <div className="qr-amount">ຍອດທີ່ຕ້ອງໂອນ: <strong>{checkoutTotal.toLocaleString()} ກີບ</strong></div>
+              <div className="qr-amount">ຍອດທີ່ຕ້ອງໂອນ: <strong>{checkoutTotal.toLocaleString()} ບາດ</strong></div>
               <div className="qr-frame">
                 <img src="/images/QR.jpeg" alt="QR ຊຳລະເງິນ" onError={(e) => { e.target.style.display = "none"; e.target.nextSibling.style.display = "flex" }} />
                 <div className="qr-placeholder" style={{ display: "none" }}>ວາງຮູບ QR.jpeg ໄວ້ທີ່ public/images/</div>
@@ -584,22 +631,18 @@ function Checkout() {
             </div>
           </Reveal>
         </div>
-
         <Reveal delay={150}>
           <div className="checkout-card checkout-form">
             <h3>📝 ຂໍ້ມູນຈັດສົ່ງ</h3>
             <label>ຊື່-ນາມສະກຸນ</label>
             <input type="text" value={form.name} onChange={(e) => handleChange("name", e.target.value)} placeholder="ຊື່ຜູ້ຮັບ" className={errors.name ? "input-error" : ""} />
             {errors.name && <span className="field-error">{errors.name}</span>}
-
             <label>ທີ່ຢູ່ຈັດສົ່ງ</label>
             <textarea rows="3" value={form.address} onChange={(e) => handleChange("address", e.target.value)} placeholder="ບ້ານເລກທີ ໝູ່ ບ້ານ ເມືອງ ແຂວງ" className={errors.address ? "input-error" : ""}></textarea>
             {errors.address && <span className="field-error">{errors.address}</span>}
-
             <label>ເບີໂທຕິດຕໍ່</label>
             <input type="tel" value={form.phone} onChange={(e) => handleChange("phone", e.target.value)} placeholder="020 xxxx xxxx" className={errors.phone ? "input-error" : ""} />
             {errors.phone && <span className="field-error">{errors.phone}</span>}
-
             <button className="buy-btn confirm-btn" onClick={handleConfirm}>✅ ຢືນຢັນການສັ່ງຊື້</button>
             <p className="cart-hint">ຂໍ້ມູນຈະຖືກກອບປີ້ໄວ້ ໃຫ້ວາງສົ່ງທາງ Facebook ໃນຂັ້ນຕອນຕໍ່ໄປ</p>
           </div>
@@ -609,19 +652,17 @@ function Checkout() {
   )
 }
 
-/* ===== Thank You Page ===== */
 function ThankYou() {
   const location = useLocation()
   const total = location.state?.total
-
   return (
     <div className="thankyou-page">
       <div className="thankyou-check">
         <svg viewBox="0 0 52 52"><circle className="check-circle" cx="26" cy="26" r="24" /><path className="check-mark" d="M14 27l7 7 17-17" /></svg>
       </div>
       <h1>ຂອບໃຈສຳລັບການສັ່ງຊື້! 🎉</h1>
-      <p>ຂໍ້ມູນອໍເດີຖືກກອບປີ້ໄວ້ໃນຄລິບບອດແລ້ວ ກົດປຸ່ມລຸ່ມນີ້ເພື່ອເປີດ Facebook ແລ້ວວາງ (paste) ສົ່ງອໍເດີ ພ້ອມແນບສະລິບໂອນເງິນ</p>
-      {total && <div className="thankyou-total">ຍອດລວມ: <strong>{total.toLocaleString()} ກີບ</strong></div>}
+      <p>ຂໍ້ມູນອໍເດີຖືກກອບປີ້ໄວ້ໃນຄລິບບອດແລ້ວ ກົດປຸ່ມລຸ່ມນີ້ເພື່ອເປີດ Facebook ແລ້ວวາງ (paste) ສົ່ງອໍເດີ ພ້ອມແນບສະລບໂອນເງິນ</p>
+      {total && <div className="thankyou-total">ຍອດລວມ: <strong>{total.toLocaleString()} ບາດ</strong></div>}
       <div className="thankyou-actions">
         <a href={FB_PAGE} target="_blank" rel="noopener noreferrer" className="buy-btn" onClick={Ripple}>ເປີດ Facebook ເພື່ອວາງສົ່ງ →</a>
         <Link to="/" className="buy-btn-outline">ກັບໄປໜ້າຫຼັກ</Link>
@@ -633,11 +674,11 @@ function ThankYou() {
 function About() {
   return (
     <div>
-      <section className="page-hero"><h1>ກ່ຽວກັບ Vintage DS</h1><p>ເສື້ອຜ້າມືສອງ ສະພາບດີ ລາຄາເປັນກັນເອງ</p></section>
+      <section className="page-hero"><h1>ກ່ຽວກັບ Vintage DS</h1><p>ຮ້ານເສື້ອຜ້າມືສອງແທ້ ຄັດສະພາບດີ ລາຄາຍຸດຕິທຳ</p></section>
       <div className="about-grid">
         {[
           { icon: "🎯", title: "ພາລະກິດຂອງພວກເຮົາ", text: "ຄັດເລືອກເສື້ອຜ້າມືສອງແທ້ຄຸນນະພາບດີ ນຳມາໃຫ້ລູກຄ້າໃນລາຄາທີ່ເຂົ້າເຖິງໄດ້ງ່າຍ." },
-          { icon: "✅", title: "ຄວາມໜ້າເຊື່ອຖື", text: "ທຸກຕົວກວດເຊັກສະພາບກ່ອນລົງຂາຍ ບໍ່ມີການປິດບັງຕຳນິ." },
+          { icon: "✅", title: "ຄວາມໜ້າເຊື່ອຖື", text: "ທຸກຕົວກວດເຊັກສະພາບກ່ອນລົງຂາຍ ບໍ່ມີການປິດບງຕຳນິ." },
           { icon: "💬", title: "ບໍລິການລູກຄ້າ", text: "ຕອບແຊັດໄວ ພ້ອມໃຫ້ຄຳປຶກສາເລືອກໄຊສ໌ ແລະ ສະໄຕລ໌." },
         ].map((c, i) => (
           <Reveal key={i} delay={i * 100}><div className="about-card"><div className="about-icon">{c.icon}</div><h3>{c.title}</h3><p>{c.text}</p></div></Reveal>
@@ -661,11 +702,24 @@ function Contact() {
   )
 }
 
+/* ===== 404 Page ===== */
+function NotFound() {
+  return (
+    <div className="notfound-page">
+      <div className="notfound-number">404</div>
+      <div className="notfound-emoji">🧦</div>
+      <h1>ອ້າວ! ຫາໜ້ານີ້ບໍ່ພົບ</h1>
+      <p>ອາດຈະຖືກລຶບ ຫຼື ລິ້ງບໍ່ຖືກຕ້ອງ ລອງກັບໄປໜ້າຫຼັກເບິ່ງໄດ້ເລີຍ</p>
+      <Link to="/" className="buy-btn">← ກັບໄປໜ້າຫຼັກ</Link>
+    </div>
+  )
+}
+
 function Footer() {
   return (
     <footer className="footer">
       <div className="footer-grid">
-        <div><h4 className="footer-logo">Vintage DS</h4><p>ເສື້ອຜ້າມືສອງ ສະພາບດີ ລາຄາເປັນກັນເອງ</p></div>
+        <div><h4 className="footer-logo">Vintage DS</h4><p>ເສື້ອຜ້າມືສອງແທ້ ສະພາບດີ ລາຄາຍຸດຕິທຳ</p></div>
         <div><h5>ໝວດໝູ່</h5><ul><li><Link to="/categories">Hoodie</Link></li><li><Link to="/categories">Polo</Link></li><li><Link to="/categories">Premium</Link></li></ul></div>
         <div><h5>ລິ້ງດ່ວນ</h5><ul><li><Link to="/promotions">ໂປຣໂມຊັນ</Link></li><li><Link to="/faq">FAQ</Link></li><li><Link to="/reviews">ລີວິວ</Link></li></ul></div>
         <div><h5>ຕິດຕໍ່</h5><a href={FB_PAGE} target="_blank" rel="noopener noreferrer">Facebook Page</a></div>
@@ -693,6 +747,7 @@ function AppContent() {
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
       <BackToTop />

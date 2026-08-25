@@ -333,3 +333,58 @@ body { background: var(--bg); margin: 0; font-family: 'Poppins', -apple-system, 
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+/* ===== Skeleton loading ===== */
+.img-skeleton { position: absolute; inset: 0; background: linear-gradient(90deg, #f0f4f9 25%, #e6edf7 50%, #f0f4f9 75%); background-size: 200% 100%; animation: shimmerLoad 1.4s ease-in-out infinite; }
+@keyframes shimmerLoad { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.img-loading { opacity: 0; }
+.img-loaded { opacity: 1; transition: opacity 0.4s ease; }
+
+/* ===== Sold out ===== */
+.product-card.is-sold { opacity: 0.85; }
+.product-card.is-sold .product-img-wrap img { filter: grayscale(0.6); }
+.sold-overlay { position: absolute; inset: 0; background: rgba(13,13,13,0.45); display: flex; align-items: center; justify-content: center; z-index: 4; }
+.sold-overlay span { background: #fff; color: var(--ink); font-weight: 800; padding: 8px 22px; border-radius: 999px; font-size: 0.85rem; transform: rotate(-8deg); box-shadow: 0 6px 16px rgba(0,0,0,0.2); }
+.detail-sold { border-radius: 18px; }
+.sold-tag, .sold-tag-mini { background: var(--ink); color: #fff; font-weight: 700; padding: 4px 12px; border-radius: 999px; font-size: 0.72rem; }
+.sold-tag-mini { padding: 2px 8px; font-size: 0.65rem; margin-left: 6px; }
+.sold-notice { background: #fff4f3; color: #b3261e; padding: 14px 18px; border-radius: 12px; font-size: 0.88rem; margin-bottom: 16px; }
+
+/* ===== Related products ===== */
+.related-section { max-width: 1100px; margin: 40px auto 0; padding: 0 24px; }
+.related-section h2 { font-size: 1.3rem; margin-bottom: 4px; }
+.related-grid { padding: 20px 0 10px; max-width: none; }
+
+/* ===== Hamburger + mobile menu ===== */
+.desktop-only { display: flex; }
+.mobile-only { display: none; }
+.navbar-mobile-actions { align-items: center; gap: 10px; }
+
+.hamburger { width: 38px; height: 38px; border: none; background: rgba(255,255,255,0.1); border-radius: 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; transition: background 0.2s ease; }
+.hamburger:hover { background: rgba(255,255,255,0.18); }
+.hamburger span { width: 18px; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s ease; }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-menu-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 98; animation: fadeIn 0.25s ease; }
+.mobile-menu { position: fixed; top: 0; right: -280px; width: 280px; height: 100vh; background: var(--navy); z-index: 99; padding: 90px 20px 20px; transition: right 0.35s ease; overflow-y: auto; }
+.mobile-menu.open { right: 0; }
+.mobile-search { margin-bottom: 20px; position: relative; }
+.mobile-search input { width: 100%; padding: 10px 14px; border-radius: 999px; border: none; outline: none; background: rgba(255,255,255,0.12); color: #fff; font-family: 'Poppins', sans-serif; font-size: 0.85rem; }
+.mobile-search input::placeholder { color: #9aa7bd; }
+.mobile-search-results { background: #fff; border-radius: 12px; margin-top: 8px; max-height: 240px; overflow-y: auto; }
+.mobile-link { display: block; color: #cfd8e8; text-decoration: none; font-size: 0.95rem; font-weight: 600; padding: 14px 6px; border-bottom: 1px solid rgba(255,255,255,0.08); opacity: 0; animation: fadeInUp 0.4s ease forwards; }
+.mobile-link.active { color: var(--blue); }
+
+@media (max-width: 900px) {
+  .desktop-only { display: none; }
+  .mobile-only { display: flex; }
+  .navbar { padding: 14px 20px; }
+}
+
+/* ===== 404 page ===== */
+.notfound-page { max-width: 480px; margin: 0 auto; padding: 90px 24px 100px; text-align: center; }
+.notfound-number { font-size: 5rem; font-weight: 800; color: var(--blue-light); line-height: 1; margin-bottom: -10px; }
+.notfound-emoji { font-size: 2.6rem; margin-bottom: 16px; animation: floatLogo 3s ease-in-out infinite; }
+.notfound-page h1 { font-size: 1.4rem; margin: 0 0 10px; }
+.notfound-page p { color: var(--text-muted); font-size: 0.9rem; margin: 0 0 26px; }
