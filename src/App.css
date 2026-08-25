@@ -31,7 +31,7 @@ body { background: var(--bg); margin: 0; font-family: 'Poppins', -apple-system, 
 
 /* ===== Navbar ===== */
 .navbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 32px; background: var(--navy); position: sticky; top: 0; z-index: 100; transition: all 0.35s ease; flex-wrap: wrap; }
-.navbar-scrolled { background: rgba(16, 24, 40, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 20px rgba(0,0,0,0.25); padding: 10px 32px; }
+.navbar-scrolled { background: rgba(16, 24, 40, 0.8); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); box-shadow: 0 4px 20px rgba(0,0,0,0.25); padding: 10px 32px; }
 .navbar-logo { font-size: 1.3rem; font-weight: 800; text-decoration: none; color: #fff; transition: transform 0.25s ease; flex-shrink: 0; }
 .navbar-logo:hover { transform: scale(1.05); }
 .navbar-logo span { color: var(--amber); }
@@ -80,7 +80,7 @@ body { background: var(--bg); margin: 0; font-family: 'Poppins', -apple-system, 
 @keyframes floatUp { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 0.5; } 90% { opacity: 0.3; } 100% { transform: translateY(-380px); opacity: 0; } }
 
 .hero-emojis { position: absolute; inset: 0; pointer-events: none; }
-.floaty-emoji { position: absolute; font-size: 1.4rem; opacity: 0.5; left: calc(10% + var(--i) * 15%); top: calc(15% + (var(--i) * 11) % 60 * 1%); animation: floatSide 6s ease-in-out infinite; animation-delay: calc(var(--i) * 0.6s); }
+.floaty-emoji { position: absolute; font-size: 1.4rem; opacity: 0.5; left: calc(10% + var(--i) * 15%); top: calc(15% + (var(--i) * 11)  60 * 1%); animation: floatSide 6s ease-in-out infinite; animation-delay: calc(var(--i) * 0.6s); }
 @keyframes floatSide { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-18px) rotate(8deg); } }
 
 .hero-tagline-badge { position: relative; display: inline-block; background: linear-gradient(90deg, var(--amber), #f7c352); color: var(--ink); font-weight: 700; font-size: 0.75rem; padding: 6px 16px; border-radius: 999px; margin-bottom: 16px; animation: bounceIn 0.6s ease, shimmerPulse 2.5s ease-in-out infinite 0.6s; }
@@ -388,3 +388,99 @@ body { background: var(--bg); margin: 0; font-family: 'Poppins', -apple-system, 
 .notfound-emoji { font-size: 2.6rem; margin-bottom: 16px; animation: floatLogo 3s ease-in-out infinite; }
 .notfound-page h1 { font-size: 1.4rem; margin: 0 0 10px; }
 .notfound-page p { color: var(--text-muted); font-size: 0.9rem; margin: 0 0 26px; }
+/* ===== Lightning gradient accent ===== */
+:root {
+  --grad: linear-gradient(135deg, #2f80ed, #8b5cf6);
+  --purple: #8b5cf6;
+}
+
+/* ===== Dark theme ===== */
+body.dark-theme {
+  background: #0b0f1a;
+  color: #e4e9f5;
+}
+body.dark-theme .hero,
+body.dark-theme .filter-bar,
+body.dark-theme .product-grid,
+body.dark-theme .why-us,
+body.dark-theme .testimonials,
+body.dark-theme .page-hero,
+body.dark-theme .section-label,
+body.dark-theme .faq-list,
+body.dark-theme .about-grid,
+body.dark-theme .contact-card,
+body.dark-theme .related-section {
+  background: #0b0f1a;
+  color: #e4e9f5;
+}
+body.dark-theme .hero { background: radial-gradient(circle at 50% 0%, #1a1440 0%, #0b0f1a 70%); }
+body.dark-theme .promo-hero { background: radial-gradient(circle at 50% 0%, #241a3d, #0b0f1a); }
+body.dark-theme .shop-subtitle,
+body.dark-theme .page-hero p,
+body.dark-theme .section-label span,
+body.dark-theme .text-muted { color: #9aa5c4; }
+body.dark-theme .product-card,
+body.dark-theme .testimonial-card,
+body.dark-theme .why-us-item,
+body.dark-theme .about-card,
+body.dark-theme .contact-card,
+body.dark-theme .faq-item,
+body.dark-theme .checkout-card,
+body.dark-theme .cart-item,
+body.dark-theme .cart-summary,
+body.dark-theme .modal-card {
+  background: #131a2c;
+  border-color: #232c47;
+  color: #e4e9f5;
+}
+body.dark-theme .filter-btn { background: #131a2c; border-color: #2a3456; color: #7fa8f0; }
+body.dark-theme .filter-btn.active { background: var(--grad); border-color: transparent; color: #fff; }
+body.dark-theme .price-tag { background: rgba(139,92,246,0.18); color: #b39dfb; }
+body.dark-theme .size-chip { background: #1c2440; color: #9aa5c4; }
+body.dark-theme .buy-btn-outline { background: #131a2c; border-color: var(--purple); color: #b39dfb; }
+body.dark-theme .navbar-search input:focus { background: #1c2440; color: #fff; }
+body.dark-theme .img-skeleton { background: linear-gradient(90deg, #131a2c 25%, #1c2440 50%, #131a2c 75%); background-size: 200% 100%; }
+body.dark-theme .shop-title { background: linear-gradient(90deg, #fff, #7fa8f0, #b39dfb, #fff); background-size: 300% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+/* ===== Theme toggle button ===== */
+.theme-toggle { width: 38px; height: 38px; border-radius: 50%; border: none; background: rgba(255,255,255,0.1); cursor: pointer; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; transition: all 0.25s ease; margin-left: 4px; }
+.theme-toggle:hover { background: rgba(139,92,246,0.3); transform: rotate(20deg) scale(1.1); }
+
+/* ===== Messenger floating button ===== */
+.messenger-btn {
+  position: fixed; bottom: 24px; left: 24px; width: 56px; height: 56px; border-radius: 50%;
+  background: linear-gradient(135deg, #00c6ff, #8b5cf6); display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; text-decoration: none; box-shadow: 0 10px 26px rgba(139,92,246,0.4); z-index: 95;
+  transition: transform 0.25s ease; animation: msgFloat 3s ease-in-out infinite;
+}
+.messenger-btn:hover { transform: scale(1.1); }
+.messenger-pulse { position: absolute; inset: 0; border-radius: 50%; background: rgba(139,92,246,0.5); animation: msgPulse 2s ease-out infinite; }
+@keyframes msgPulse { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.8); opacity: 0; } }
+@keyframes msgFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+/* ===== Size chart modal ===== */
+.size-chart-link { background: none; border: 1.5px dashed var(--purple); color: var(--purple); font-size: 0.75rem; font-weight: 700; padding: 5px 12px; border-radius: 999px; cursor: pointer; transition: all 0.2s ease; }
+.size-chart-link:hover { background: rgba(139,92,246,0.08); }
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.25s ease; }
+.modal-card { background: #fff; border-radius: 18px; padding: 28px; max-width: 380px; width: 100%; position: relative; animation: popIn 0.3s ease; }
+.modal-close { position: absolute; top: 14px; right: 16px; background: none; border: none; font-size: 1.6rem; cursor: pointer; color: var(--text-muted); line-height: 1; }
+.modal-card h3 { margin: 0 0 16px; }
+.size-table { width: 100%; border-collapse: collapse; }
+.size-table th, .size-table td { padding: 10px; text-align: center; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+.size-table th { color: var(--text-muted); font-weight: 600; }
+.current-size-row { background: rgba(139,92,246,0.08); font-weight: 700; color: var(--purple); }
+.size-hint { font-size: 0.76rem; color: var(--text-muted); margin: 14px 0 0; }
+
+/* ===== Page transition ===== */
+.page-fade { animation: pageFadeIn 0.4s ease; }
+@keyframes pageFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== Confetti ===== */
+.confetti-wrap { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 250; }
+.confetti-piece { position: absolute; top: -20px; width: 9px; height: 14px; opacity: 0.9; animation: confettiFall linear forwards; border-radius: 2px; }
+@keyframes confettiFall { to { transform: translateY(110vh) rotate(540deg); opacity: 0; } }
+
+/* ===== Lightning accent touches ===== */
+.hero-tagline-badge { background: var(--grad) !important; color: #fff !important; }
+.filter-btn.active { background: var(--grad); box-shadow: 0 6px 16px rgba(139,92,246,0.35); }
+.follow-fb-btn { background: linear-gradient(135deg, #1877F2, var(--purple)); }

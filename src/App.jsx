@@ -2,57 +2,69 @@ import './App.css'
 import { useState, useEffect, useRef, createContext, useContext } from 'react'
 import { Routes, Route, Link, useParams, useLocation, useNavigate } from 'react-router-dom'
 
-/* 👉 ตั้งค่า sold: true เมื่อสินค้าชนนั้นขายแล้ว */
+const sizeChart = {
+  S: { chest: 20, length: 25 },
+  M: { chest: 21, length: 26 },
+  L: { chest: 22, length: 27 },
+}
+
 const products = [
-  { id: 1, name: "BAPE ລິຂະສິດແທ້", price: 559000, category: "BAPE", size: "L", image: "/images/BAPE.jpeg", images: ["/images/BAPE.jpeg", "/images/B1.jpeg", "/images/B2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
-  { id: 2, name: "Hoodie", price: 359000, category: "hoodie", size: "M", image: "/images/Hoodie.jpeg", images: ["/images/Hoodie.jpeg", "/images/H1.jpeg", "/images/H2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
-  { id: 3, name: "POLO", price: 289000, category: "polo", size: "L", image: "/images/POLO.jpeg", images: ["/images/POLO.jpeg", "/images/P1.jpeg", "/images/P2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
-  { id: 4, name: "VLONE", price: 289000, category: "premium", size: "M", image: "/images/VLONE.jpeg", images: ["/images/VLONE.jpeg", "/images/V1.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
-  { id: 5, name: "I don't smoke", price: 259000, category: "hoodie", size: "L", image: "/images/ID.jpeg", images: ["/images/ID.jpeg", "/images/S1.jpeg", "/images/S2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
-  { id: 6, name: "Onitsuka Tiger", price: 250000, category: "premium", size: "S", image: "/images/ONITSUKATIGER.jpeg", images: ["/images/ONITSUKATIGER.jpeg", "/images/O1.jpeg", "/images/O2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
-  { id: 7, name: "BAPE ", price: 350000, category: "BAPE", size: "M", image: "/images/a.jpeg", images: ["/images/a1.jpeg", "/images/a2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
-  { id: 8, name: "BAPE", price: 289000, category: "BAPE", size: "M", image: "/images/c.jpeg", images: ["/images/c1.jpeg", "/images/c2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
-  { id: 9, name: "NIKE", price: 359000, category: "NIKE", size: "L", image: "/images/d.jpeg", images: ["/images/d1.jpeg", "/images/d2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
-  { id: 10, name: "AAPE", price: 289000, category: "AAPE", size: "M", image: "/images/e.jpeg", images: ["/images/e1.jpeg", "/images/e2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
-  { id: 11, name: "NIKE", price: 389000, category: "NIKE", size: "L", image: "/images/f.jpeg", images: ["/images/f1.jpeg", "/images/f2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
-  { id: 12, name: "Arcteryx", price: 359000, category: "premium", size: "L", image: "/images/g.jpeg", images: ["/images/g1.jpeg", "/images/g2.jpeg", "/images/g3.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
+  { id: 1, name: "BAPE ລິຂະສິດແທ້", price: 1500, category: "premium", size: "L", sold: false, image: "/images/BAPE.jpeg", images: ["/images/BAPE.jpeg", "/images/B1.jpeg", "/images/B2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
+  { id: 2, name: "Hoodie", price: 500, category: "hoodie", size: "M", sold: false, image: "/images/Hoodie.jpeg", images: ["/images/Hoodie.jpeg", "/images/H1.jpeg", "/images/H2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
+  { id: 3, name: "POLO", price: 450, category: "polo", size: "L", sold: false, image: "/images/POLO.jpeg", images: ["/images/POLO.jpeg", "/images/P1.jpeg", "/images/P2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
+  { id: 4, name: "VLONE", price: 450, category: "premium", size: "M", sold: false, image: "/images/VLONE.jpeg", images: ["/images/VLONE.jpeg", "/images/V1.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
+  { id: 5, name: "I don't smoke", price: 450, category: "hoodie", size: "L", sold: false, image: "/images/ID.jpeg", images: ["/images/ID.jpeg", "/images/S1.jpeg", "/images/S2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
+  { id: 6, name: "Onitsuka Tiger", price: 450, category: "premium", size: "S", sold: false, image: "/images/ONITSUKATIGER.jpeg", images: ["/images/ONITSUKATIGER.jpeg", "/images/O1.jpeg", "/images/O2.jpeg"], detail: "ສະພາບດີ ບໍ່ມີຕຳນິ" },
 ]
 
 const categoryLabels = { all: "ທັງໝົດ", hoodie: "Hoodie", polo: "Polo", premium: "Premium" }
 const categoryColors = { hoodie: "#2f80ed", polo: "#12b886", premium: "#f5a623" }
 const FB_PAGE = "https://www.facebook.com/share/1Lbrzf1wqb/?mibextid=wwXIfr"
+const FB_USERNAME = null // 👉 ใส่ username เพจ (เช่น "VintageDS.Laos") ตอนได้แล้ว จะใช้ m.me อัตโนมัติ
+const MESSENGER_LINK = FB_USERNAME ? `https://m.me/${FB_USERNAME}` : FB_PAGE
 const SALE_MAX_PRICE = 500
 
 const faqData = [
   { q: "ສິນຄ້າແມ່ນຂອງແທ້ບໍ?", a: "ແທ້ 100% ທຸກຕົວກວດເຊັກສະພາບກ່ອນລົງຂາຍ." },
-  { q: "ສງຊື້ແນວໃດ?", a: "ເລືອກສິນຄ້າ ໃສ່ຕະກ້າ ຫຼືກດ 'ສັ່ງຊື້ເລີຍ' ຈາກນັ້ນຊຳລະຜ່ານ QR ແລ້ວກອບປີຂໍ້ຄວາມສົ່ງໃນແຊັດ." },
+  { q: "ສັ່ງຊື້ແນວໃດ?", a: "ເລືອກສິນຄ້າ ໃສ່ຕະກ້າ ຫຼືກົດ 'ສັ່ງຊື້ເລີຍ' ຈາກນັ້ນຊຳລະຜ່ານ QR ແລ້ວກອບປີ້ຂໍ້ຄວາມສົ່ງໃນແຊັດ." },
   { q: "ຊຳລະເງິນແນວໃດ?", a: "ໂອນຜ່ານ QR ໃນໜ້າຊຳລະເງິນ ຈາກນັ້ນສົ່ງສະລິບໃຫ້ພວກເຮົາທາງ Facebook." },
-  { q: "ສົ່ງເສື້ອຜ້າດົນປານໃດ?", a: "ໂດຍປົກກະຕ 2-4 ວັນທຳການ ຫຼັງຢືນຢັນອໍເດີ." },
-  { q: "ຖ້າສິນຄ້າບໍ່ຕງກັບຮູບ ປ່ຽນໄດ້ບໍ?", a: "ປ່ຽນໄດ້ ຫາກສິນຄ້າບໍ່ຕົງກັບຮູບທີ່ລົງໄວ້ ພາຍໃນ 3 ວັນຫຼັງໄດ້ຮັບເສື້ອ." },
-  { q: "ໄຊສ໌ບໍ່ພໍດີ ມີໄຊສ໌ອື່ນບໍ?", a: "ສິນຄ້າມືສອງແຕ່ລະຕົວມີພຽງ 1 ໄຊສ໌ ຕາມທີ່ລະບຸໄວ້ໃນໜ້າສິນຄ້າ." },
+  { q: "ສົ່ງເສື້ອຜ້າດົນປານໃດ?", a: "ໂດຍປົກກະຕິ 2-4 ວັນທຳການ ຫຼັງຢືນຢັນອໍເດີ." },
+  { q: "ຖ້າສິນຄ້າບໍ່ຕົງກັບຮູບ ປ່ຽນໄດ້ບໍ?", a: "ປ່ຽນໄດ້ ຫາກສິນຄ້າບໍ່ຕົງກັບຮູບທີ່ລົງໄວ້ ພາຍໃນ 3 ວັນຫຼັງໄດ້ຮັບເສື້ອ." },
+  { q: "ໄຊສ໌ບໍ່ພໍດີ ມີໄຊສ໌ອື່ນບໍ?", a: "ສິນຄ້າມືສອງແຕ່ລະຕົວມີພຽງ 1 ໄຊສ໌ ຕາມທີ່ລະບຸໄວ້ໃນໜ້າສິນຄ້າ. ເບິ່ງຕາຕະລາງໄຊສ໌ໃນໜ້າສິນຄ້າໄດ້ເລີຍ." },
 ]
 
 const reviewsData = [
   { name: "ນ້ອງແອັມ", text: "ສິນຄ້າສະພາບດີຫຼາຍ ຕົງຕາມຮູບ ສົ່ງໄວທັນໃຈ" },
   { name: "ພີ່ໂຕ", text: "ລາຄາຍຸດຕິທຳ ຕອບແຊັດໄວ ຈະອຸດໜູນຕໍ່ແນ່ນອນ" },
   { name: "ນ້ອງມິນ", text: "ຂອງແທ້ 100% ຄຸ້ມຄ່າຄຸ້ມລາຄາຫຼາຍໆ" },
-  { name: "ອ້າຍນິງ", text: "ຫຸ້ຍ Hoodie ນຸ່ມ ສະພາບຄືກັບໃໝ ແນະນຳຮ້ານນີ້ເລີຍ" },
+  { name: "ອ້າຍນິງ", text: "ຫຸ້ຍ Hoodie ນຸ່ມ ສະພາບຄືກັບໃໝ່ ແນະນຳຮ້ານນີ້ເລີຍ" },
   { name: "ນ້ອງແພັມ", text: "ຮູບຊັດ ລາຍລະອຽດຄົບ ບໍ່ຫຼອກລວງ ໄວ້ໃຈໄດ້" },
-  { name: "ພແບັງ", text: "ຊື້ໄປຫາຍຄັ້ງແລ້ວ ຄນນະພາບຄົງທີ່ ລາຄາເປັນກັນເອງ" },
+  { name: "ພີ່ແບັງ", text: "ຊື້ໄປຫຼາຍຄັ້ງແລ້ວ ຄຸນນະພາບຄົງທີ່ ລາຄາເປັນກັນເອງ" },
   { name: "ນ້ອງນິວ", text: "ແພັກສິນຄ້າດີ ບໍ່ຢ້ານເປື້ອນ ມາຮອດໄວ" },
   { name: "ອ້າຍໂອ", text: "POLO ໄດ້ຄືຮູບ 100% ພໍໃຈຫຼາຍ" },
 ]
 
+/* ================= Theme Context ================= */
+const ThemeContext = createContext(null)
+function useTheme() { return useContext(ThemeContext) }
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState(() => localStorage.getItem("vintage-ds-theme") || "light")
+  useEffect(() => {
+    document.body.classList.toggle("dark-theme", theme === "dark")
+    localStorage.setItem("vintage-ds-theme", theme)
+  }, [theme])
+  const toggle = () => setTheme((t) => (t === "light" ? "dark" : "light"))
+  return <ThemeContext.Provider value={{ theme, toggle }}>{children}</ThemeContext.Provider>
+}
+
 /* ================= Cart Context ================= */
 const CartContext = createContext(null)
 function useCart() { return useContext(CartContext) }
-
 function CartProvider({ children }) {
   const [items, setItems] = useState(() => {
     try { const saved = localStorage.getItem("vintage-ds-cart"); return saved ? JSON.parse(saved) : [] } catch { return [] }
   })
   useEffect(() => { localStorage.setItem("vintage-ds-cart", JSON.stringify(items)) }, [items])
-
   const addToCart = (product) => {
     if (product.sold) return
     setItems((prev) => {
@@ -66,7 +78,6 @@ function CartProvider({ children }) {
   const clearCart = () => setItems([])
   const total = items.reduce((sum, i) => sum + i.price * i.qty, 0)
   const count = items.reduce((sum, i) => sum + i.qty, 0)
-
   return <CartContext.Provider value={{ items, addToCart, removeFromCart, changeQty, clearCart, total, count }}>{children}</CartContext.Provider>
 }
 
@@ -122,32 +133,45 @@ function Ripple(e) {
   setTimeout(() => circle.remove(), 600)
 }
 
-/* ===== Image with skeleton loading ===== */
 function SmartImg({ src, alt, className = "" }) {
   const [loaded, setLoaded] = useState(false)
   return (
     <>
       {!loaded && <div className={`img-skeleton ${className}`}></div>}
-      <img
-        src={src} alt={alt}
-        className={`${className} ${loaded ? "img-loaded" : "img-loading"}`}
-        onLoad={() => setLoaded(true)}
-        loading="lazy"
-      />
+      <img src={src} alt={alt} className={`${className} ${loaded ? "img-loaded" : "img-loading"}`} onLoad={() => setLoaded(true)} loading="lazy" />
     </>
   )
 }
 
+/* ===== Confetti ===== */
+function Confetti() {
+  const pieces = Array.from({ length: 40 })
+  const colors = ["#2f80ed", "#8b5cf6", "#f5a623", "#12b886"]
+  return (
+    <div className="confetti-wrap">
+      {pieces.map((_, i) => (
+        <span key={i} className="confetti-piece" style={{
+          left: `${Math.random() * 100}%`,
+          background: colors[i % colors.length],
+          animationDelay: `${Math.random() * 0.6}s`,
+          animationDuration: `${2 + Math.random() * 1.5}s`,
+        }}></span>
+      ))}
+    </div>
+  )
+}
+
 function PromoBar() {
-  const text = "🚚 ສົ່ງທົ່ວປະເທດ　💯 ຂອງແທ້ 100%　🔄 ປ່ຽນໄດ້ຫາກສິນຄ້າບໍ່ຕົງປົກ　🔥 ອັບເດດສິນຄ້າໃໝ່ທກອາທິດ　"
+  const text = "🚚 ສົ່ງທົ່ວປະເທດ　💯 ຂອງແທ້ 100%　🔄 ປ່ຽນໄດ້ຫາກສິນຄ້າບໍ່ຕົງປົກ　🔥 ອັບເດດສິນຄ້າໃໝ່ທຸກອາທິດ　"
   return <div className="promo-bar"><div className="marquee"><span>{text}{text}</span></div></div>
 }
 
-/* ===== Navbar (with hamburger) ===== */
+/* ===== Navbar ===== */
 function Navbar() {
   const location = useLocation()
   const navigate = useNavigate()
   const { count } = useCart()
+  const { theme, toggle } = useTheme()
   const [scrolled, setScrolled] = useState(false)
   const [query, setQuery] = useState("")
   const [showResults, setShowResults] = useState(false)
@@ -171,13 +195,12 @@ function Navbar() {
   }, [menuOpen])
 
   const results = query.trim() ? products.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()) || p.size.toLowerCase().includes(query.toLowerCase())) : []
-
   const links = [
     { to: "/", label: "ໜ້າຫຼັກ" },
     { to: "/categories", label: "ໝວດໝູ່" },
     { to: "/promotions", label: "ໂປຣໂມຊັນ" },
-    { to: "/about", label: "ກຽວກັບຮ້ານ" },
-    { to: "/contact", label: "ຕດຕໍ່ເຮົາ" },
+    { to: "/about", label: "ກ່ຽວກັບຮ້ານ" },
+    { to: "/contact", label: "ຕິດຕໍ່ເຮົາ" },
   ]
 
   return (
@@ -202,24 +225,21 @@ function Navbar() {
         </div>
 
         <div className="navbar-links desktop-only">
-          {links.map((link) => (
-            <Link key={link.to} to={link.to} className={`nav-link ${location.pathname === link.to ? "active" : ""}`}>{link.label}</Link>
-          ))}
+          {links.map((link) => <Link key={link.to} to={link.to} className={`nav-link ${location.pathname === link.to ? "active" : ""}`}>{link.label}</Link>)}
+          <button className="theme-toggle" onClick={toggle} title="ສະຫຼັບໂໝດ">{theme === "light" ? "🌙" : "☀️"}</button>
           <Link to="/cart" className="cart-icon-link">🛒{count > 0 && <span className="cart-badge">{count}</span>}</Link>
         </div>
 
         <div className="navbar-mobile-actions mobile-only">
+          <button className="theme-toggle" onClick={toggle}>{theme === "light" ? "🌙" : "☀️"}</button>
           <Link to="/cart" className="cart-icon-link">🛒{count > 0 && <span className="cart-badge">{count}</span>}</Link>
-          <button className={`hamburger ${menuOpen ? "open" : ""}`} onClick={() => setMenuOpen(!menuOpen)} aria-label="menu">
-            <span></span><span></span><span></span>
-          </button>
+          <button className={`hamburger ${menuOpen ? "open" : ""}`} onClick={() => setMenuOpen(!menuOpen)} aria-label="menu"><span></span><span></span><span></span></button>
         </div>
       </nav>
 
       <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
         <div className="mobile-search">
-          <input type="text" placeholder="🔍 ຄົ້ນຫາຊື່ ຫຼື ໄຊສ໌..." value={query}
-            onChange={(e) => setQuery(e.target.value)} />
+          <input type="text" placeholder="🔍 ຄົ້ນຫາຊື່ ຫຼື ໄຊສ໌..." value={query} onChange={(e) => setQuery(e.target.value)} />
           {query.trim() && (
             <div className="mobile-search-results">
               {results.length === 0 && <div className="search-empty">ບໍ່ພົບສິນຄ້າ</div>}
@@ -232,12 +252,44 @@ function Navbar() {
             </div>
           )}
         </div>
-        {links.map((link, i) => (
-          <Link key={link.to} to={link.to} className={`mobile-link ${location.pathname === link.to ? "active" : ""}`} style={{ animationDelay: `${i * 0.06}s` }}>{link.label}</Link>
-        ))}
+        {links.map((link, i) => <Link key={link.to} to={link.to} className={`mobile-link ${location.pathname === link.to ? "active" : ""}`} style={{ animationDelay: `${i * 0.06}s` }}>{link.label}</Link>)}
       </div>
       {menuOpen && <div className="mobile-menu-backdrop" onClick={() => setMenuOpen(false)}></div>}
     </>
+  )
+}
+
+/* ===== Messenger floating button ===== */
+function MessengerButton() {
+  return (
+    <a href={MESSENGER_LINK} target="_blank" rel="noopener noreferrer" className="messenger-btn" title="ທັກແຊັດ Facebook">
+      <span className="messenger-pulse"></span>
+      💬
+    </a>
+  )
+}
+
+/* ===== Size chart modal ===== */
+function SizeChartModal({ open, onClose, currentSize }) {
+  if (!open) return null
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+        <button className="modal-close" onClick={onClose}>×</button>
+        <h3>📏 ຕາຕະລາງໄຊສ໌</h3>
+        <table className="size-table">
+          <thead><tr><th>ໄຊສ໌</th><th>ອົກ (ນິ້ວ)</th><th>ຍາວ (ນິ້ວ)</th></tr></thead>
+          <tbody>
+            {Object.entries(sizeChart).map(([key, val]) => (
+              <tr key={key} className={key === currentSize ? "current-size-row" : ""}>
+                <td>{key}{key === currentSize && " ✓"}</td><td>{val.chest}</td><td>{val.length}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="size-hint">📌 ວັດຈາກເສື້ອຕົວຈິງ ອາດຄາດເຄື່ອນເລັກນ້ອຍ 0.5-1 ນິ້ວ</p>
+      </div>
+    </div>
   )
 }
 
@@ -264,9 +316,7 @@ function ProductCard({ product, index }) {
         {isSale && <span className="sale-chip">ລາຄາຍ່ອມ</span>}
         {product.sold && <div className="sold-overlay"><span>ຂາຍແລ້ວ</span></div>}
         <SmartImg src={product.image} alt={product.name} />
-        {!product.sold && (
-          <button className="quick-add-btn" onClick={(e) => { e.preventDefault(); e.stopPropagation(); Ripple(e); addToCart(product); toast?.show(`ໃສ່ '${product.name}' ໃນຕະກ້າແລ້ວ ✓`) }}>+ ໃສ່ຕະກ້າ</button>
-        )}
+        {!product.sold && <button className="quick-add-btn" onClick={(e) => { e.preventDefault(); e.stopPropagation(); Ripple(e); addToCart(product); toast?.show(`ໃສ່ '${product.name}' ໃນຕະກ້າແລ້ວ ✓`) }}>+ ໃສ່ຕະກ້າ</button>}
       </div>
       <div className="product-card-info">
         <h3>{product.name}</h3>
@@ -316,13 +366,11 @@ function Home() {
         <div className="hero-ring"></div>
         <div className="hero-particles">{Array.from({ length: 16 }).map((_, i) => <span key={i} className="particle" style={{ "--i": i }}></span>)}</div>
         <div className="hero-emojis">{["👕", "✨", "🧥", "🔥", "👟", "⭐"].map((e, i) => <span key={i} className="floaty-emoji" style={{ "--i": i }}>{e}</span>)}</div>
-
         <span className="hero-tagline-badge">🔥 ຮ້ານມືສອງແທ້ອັນດັບ 1</span>
         <img src="/images/logo.jpeg" alt="Vintage DS" className="hero-logo" />
         <h1 className="shop-title">Vintage DS</h1>
         <p className="shop-subtitle">ເສື້ອຜ້າມືສອງແທ້ ສະພາບດີ ລາຄາຍຸດຕິທຳ</p>
         <a href={FB_PAGE} target="_blank" rel="noopener noreferrer" className="follow-fb-btn" onClick={Ripple}>👍 ຕິດຕາມ Facebook Page</a>
-
         <div className="trust-badges">
           <div className="trust-badge"><CountUp end={products.length} suffix="+" /><span>ລາຍການສິນຄ້າ</span></div>
           <div className="trust-badge"><CountUp end={100} suffix="%" /><span>ຂອງແທ້</span></div>
@@ -352,9 +400,7 @@ function Home() {
         <section className="testimonials">
           <h2>ລູກຄ້າເວົ້າວ່າແນວໃດ</h2>
           <div className="testimonial-grid">
-            {reviewsData.slice(0, 3).map((t, i) => (
-              <div className="testimonial-card" key={i} style={{ animationDelay: `${i * 0.1}s` }}><div className="stars">★★★★★</div><p>"{t.text}"</p><span className="testimonial-name">— {t.name}</span></div>
-            ))}
+            {reviewsData.slice(0, 3).map((t, i) => <div className="testimonial-card" key={i} style={{ animationDelay: `${i * 0.1}s` }}><div className="stars">★★★★★</div><p>"{t.text}"</p><span className="testimonial-name">— {t.name}</span></div>)}
           </div>
           <Link to="/reviews" className="view-all-link">ເບິ່ງລີວິວທັງໝົດ →</Link>
         </section>
@@ -371,7 +417,6 @@ function Home() {
   )
 }
 
-/* ===== Related products ===== */
 function RelatedProducts({ current }) {
   const related = products.filter((p) => p.id !== current.id && p.category === current.category).slice(0, 4)
   const fallback = products.filter((p) => p.id !== current.id && !related.includes(p)).slice(0, 4 - related.length)
@@ -381,9 +426,7 @@ function RelatedProducts({ current }) {
     <Reveal>
       <section className="related-section">
         <h2>ສິນຄ້າທີ່ອາດຈະຖືກໃຈ</h2>
-        <div className="product-grid related-grid">
-          {list.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
-        </div>
+        <div className="product-grid related-grid">{list.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}</div>
       </section>
     </Reveal>
   )
@@ -395,6 +438,7 @@ function ProductDetail() {
   const navigate = useNavigate()
   const product = products.find((p) => p.id === parseInt(id))
   const [activeImg, setActiveImg] = useState(0)
+  const [showSizeChart, setShowSizeChart] = useState(false)
   const imgRef = useRef(null)
   const { addToCart } = useCart()
   const toast = useContext(ToastContext)
@@ -431,6 +475,7 @@ function ProductDetail() {
             <span className="category-chip" style={{ background: categoryColors[product.category], position: "static" }}>{categoryLabels[product.category]}</span>
             <span className="size-chip size-chip-lg">ໄຊສ໌ {product.size}</span>
             {product.sold && <span className="sold-tag">ຂາຍແລ້ວ</span>}
+            <button className="size-chart-link" onClick={() => setShowSizeChart(true)}>📏 ຕາຕະລາງໄຊສ໌</button>
           </div>
           <h1>{product.name}</h1>
           <div className="stars detail-stars">★★★★★ <span>(5.0)</span></div>
@@ -457,6 +502,7 @@ function ProductDetail() {
       </div>
 
       <RelatedProducts current={product} />
+      <SizeChartModal open={showSizeChart} onClose={() => setShowSizeChart(false)} currentSize={product.size} />
 
       {!product.sold && (
         <div className="sticky-buy-bar">
@@ -468,16 +514,13 @@ function ProductDetail() {
   )
 }
 
-/* ===== Categories ===== */
 function Categories() {
   const [filter, setFilter] = useState("all")
   const filteredProducts = filter === "all" ? products : products.filter((p) => p.category === filter)
   return (
     <div>
       <section className="page-hero"><h1>ໝວດໝູ່ສິນຄ້າ</h1><p>ເລືອກເບິ່ງສິນຄ້າຕາມປະເພດທີ່ທ່ານມັກ</p></section>
-      <div className="filter-bar">
-        {Object.keys(categoryLabels).map((key) => <button key={key} className={`filter-btn ${filter === key ? "active" : ""}`} onClick={(e) => { Ripple(e); setFilter(key) }}>{categoryLabels[key]}</button>)}
-      </div>
+      <div className="filter-bar">{Object.keys(categoryLabels).map((key) => <button key={key} className={`filter-btn ${filter === key ? "active" : ""}`} onClick={(e) => { Ripple(e); setFilter(key) }}>{categoryLabels[key]}</button>)}</div>
       <div className="product-grid" key={filter}>{filteredProducts.map((product, i) => <ProductCard key={product.id} product={product} index={i} />)}</div>
     </div>
   )
@@ -518,30 +561,18 @@ function Reviews() {
     <div>
       <section className="page-hero"><h1>⭐ ລີວິວຈາກລູກຄ້າ</h1><p>ຄວາມຄິດເຫັນຈິງຈາກຄົນທີ່ອຸດໜູນ</p></section>
       <div className="testimonial-grid reviews-page-grid">
-        {reviewsData.map((t, i) => (
-          <Reveal key={i} delay={i * 60}><div className="testimonial-card" style={{ animationDelay: `${i * 0.05}s` }}><div className="stars">★★★★★</div><p>"{t.text}"</p><span className="testimonial-name">— {t.name}</span></div></Reveal>
-        ))}
+        {reviewsData.map((t, i) => <Reveal key={i} delay={i * 60}><div className="testimonial-card" style={{ animationDelay: `${i * 0.05}s` }}><div className="stars">★★★★★</div><p>"{t.text}"</p><span className="testimonial-name">— {t.name}</span></div></Reveal>)}
       </div>
     </div>
   )
 }
 
-/* ===== Cart Page ===== */
 function CartPage() {
   const { items, removeFromCart, changeQty, total } = useCart()
   const navigate = useNavigate()
-
   if (items.length === 0) {
-    return (
-      <div className="cart-empty">
-        <div className="cart-empty-icon">🛒</div>
-        <h2>ຕະກ້າຂອງທ່ານຍັງວ່າງ</h2>
-        <p>ເລືອກຊື້ສິນຄ້າແລ້ວກັບມາເບິ່ງທີ່ນີ້ໄດ້ເລີຍ</p>
-        <Link to="/" className="buy-btn">ໄປເລືອກຊື້ສິນຄ້າ</Link>
-      </div>
-    )
+    return <div className="cart-empty"><div className="cart-empty-icon">🛒</div><h2>ຕະກ້າຂອງທ່ານຍັງວ່າງ</h2><p>ເລືອກຊື້ສິນຄ້າແລ້ວກັບມາເບິ່ງທີ່ນີ້ໄດ້ເລີຍ</p><Link to="/" className="buy-btn">ໄປເລືອກຊື້ສິນຄ້າ</Link></div>
   }
-
   return (
     <div className="cart-page">
       <h1>🛒 ຕະກ້າສິນຄ້າ</h1>
@@ -563,7 +594,6 @@ function CartPage() {
   )
 }
 
-/* ===== Checkout Page ===== */
 function Checkout() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -589,9 +619,9 @@ function Checkout() {
 
   const handleConfirm = (e) => {
     const newErrors = {}
-    if (!form.name.trim()) newErrors.name = "ກະລຸນາໃສ່ຊື"
-    if (!form.address.trim()) newErrors.address = "ກະລຸນາໃສ່ທີຢູ່"
-    if (!form.phone.trim()) newErrors.phone = "ກະລຸນາໃສເບີໂທ"
+    if (!form.name.trim()) newErrors.name = "ກະລຸນາໃສ່ຊື່"
+    if (!form.address.trim()) newErrors.address = "ກະລຸນາໃສ່ທີ່ຢູ່"
+    if (!form.phone.trim()) newErrors.phone = "ກະລຸນາໃສ່ເບີໂທ"
     setErrors(newErrors)
     if (Object.keys(newErrors).length > 0) return
     Ripple(e)
@@ -655,13 +685,16 @@ function Checkout() {
 function ThankYou() {
   const location = useLocation()
   const total = location.state?.total
+  const [showConfetti, setShowConfetti] = useState(true)
+  useEffect(() => { const t = setTimeout(() => setShowConfetti(false), 3000); return () => clearTimeout(t) }, [])
   return (
     <div className="thankyou-page">
+      {showConfetti && <Confetti />}
       <div className="thankyou-check">
         <svg viewBox="0 0 52 52"><circle className="check-circle" cx="26" cy="26" r="24" /><path className="check-mark" d="M14 27l7 7 17-17" /></svg>
       </div>
       <h1>ຂອບໃຈສຳລັບການສັ່ງຊື້! 🎉</h1>
-      <p>ຂໍ້ມູນອໍເດີຖືກກອບປີ້ໄວ້ໃນຄລິບບອດແລ້ວ ກົດປຸ່ມລຸ່ມນີ້ເພື່ອເປີດ Facebook ແລ້ວวາງ (paste) ສົ່ງອໍເດີ ພ້ອມແນບສະລບໂອນເງິນ</p>
+      <p>ຂໍ້ມູນອໍເດີຖືກກອບປີ້ໄວ້ໃນຄລິບບອດແລ້ວ ກົດປຸ່ມລຸ່ມນີ້ເພື່ອເປີດ Facebook ແລ້ວวາງ (paste) ສົ່ງອໍເດີ ພ້ອມແນບສະລິບໂອນເງິນ</p>
       {total && <div className="thankyou-total">ຍອດລວມ: <strong>{total.toLocaleString()} ບາດ</strong></div>}
       <div className="thankyou-actions">
         <a href={FB_PAGE} target="_blank" rel="noopener noreferrer" className="buy-btn" onClick={Ripple}>ເປີດ Facebook ເພື່ອວາງສົ່ງ →</a>
@@ -678,11 +711,9 @@ function About() {
       <div className="about-grid">
         {[
           { icon: "🎯", title: "ພາລະກິດຂອງພວກເຮົາ", text: "ຄັດເລືອກເສື້ອຜ້າມືສອງແທ້ຄຸນນະພາບດີ ນຳມາໃຫ້ລູກຄ້າໃນລາຄາທີ່ເຂົ້າເຖິງໄດ້ງ່າຍ." },
-          { icon: "✅", title: "ຄວາມໜ້າເຊື່ອຖື", text: "ທຸກຕົວກວດເຊັກສະພາບກ່ອນລົງຂາຍ ບໍ່ມີການປິດບງຕຳນິ." },
+          { icon: "✅", title: "ຄວາມໜ້າເຊື່ອຖື", text: "ທຸກຕົວກວດເຊັກສະພາບກ່ອນລົງຂາຍ ບໍ່ມີການປິດບັງຕຳນິ." },
           { icon: "💬", title: "ບໍລິການລູກຄ້າ", text: "ຕອບແຊັດໄວ ພ້ອມໃຫ້ຄຳປຶກສາເລືອກໄຊສ໌ ແລະ ສະໄຕລ໌." },
-        ].map((c, i) => (
-          <Reveal key={i} delay={i * 100}><div className="about-card"><div className="about-icon">{c.icon}</div><h3>{c.title}</h3><p>{c.text}</p></div></Reveal>
-        ))}
+        ].map((c, i) => <Reveal key={i} delay={i * 100}><div className="about-card"><div className="about-icon">{c.icon}</div><h3>{c.title}</h3><p>{c.text}</p></div></Reveal>)}
       </div>
     </div>
   )
@@ -702,7 +733,6 @@ function Contact() {
   )
 }
 
-/* ===== 404 Page ===== */
 function NotFound() {
   return (
     <div className="notfound-page">
@@ -729,28 +759,36 @@ function Footer() {
   )
 }
 
+function PageWrapper({ children }) {
+  const location = useLocation()
+  return <div key={location.pathname} className="page-fade">{children}</div>
+}
+
 function AppContent() {
   const toast = useToast()
   return (
     <ToastContext.Provider value={toast}>
       <PromoBar />
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/promotions" element={<Promotions />} />
-        <Route path="/faq" element={<FAQ />} />
-        <Route path="/reviews" element={<Reviews />} />
-        <Route path="/cart" element={<CartPage />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/thank-you" element={<ThankYou />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <PageWrapper>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/promotions" element={<Promotions />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/reviews" element={<Reviews />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/thank-you" element={<ThankYou />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </PageWrapper>
       <Footer />
       <BackToTop />
+      <MessengerButton />
       <toast.Toast />
     </ToastContext.Provider>
   )
@@ -758,9 +796,11 @@ function AppContent() {
 
 function App() {
   return (
-    <CartProvider>
-      <AppContent />
-    </CartProvider>
+    <ThemeProvider>
+      <CartProvider>
+        <AppContent />
+      </CartProvider>
+    </ThemeProvider>
   )
 }
 
